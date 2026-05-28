@@ -3,11 +3,8 @@ import { ref } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 
 const route = useRoute()
-
-// Controls whether Settings submenu is open
 const settingsOpen = ref(false)
 
-// Main menu items
 const menuItems = [
   { path: '/users', label: 'Usuarios', icon: '👤' },
   { path: '/trucks', label: 'Camionetas', icon: '🚛' },
@@ -16,22 +13,17 @@ const menuItems = [
   { path: '/records', label: 'Historial', icon: '📋' },
 ]
 
-// Settings submenu items — nested routes
 const settingsItems = [
   { path: '/settings/general', label: 'General' },
   { path: '/settings/team', label: 'Equipo' },
 ]
 
-// Check if a path is active
 const isActive = (path: string): boolean => route.path.startsWith(path)
-
-// Check if settings section is active
 const settingsActive = (): boolean => route.path.startsWith('/settings')
 </script>
 
 <template>
   <aside class="w-64 min-h-screen bg-gray-900 text-white flex flex-col">
-    <!-- Logo -->
     <div class="p-5 border-b border-gray-700">
       <div class="flex items-center gap-3">
         <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-sm">
@@ -44,9 +36,7 @@ const settingsActive = (): boolean => route.path.startsWith('/settings')
       </div>
     </div>
 
-    <!-- Navigation -->
     <nav class="flex-1 p-3 space-y-1 overflow-y-auto">
-      <!-- Regular menu items -->
       <RouterLink
         v-for="item in menuItems"
         :key="item.path"
@@ -62,10 +52,8 @@ const settingsActive = (): boolean => route.path.startsWith('/settings')
         <span class="font-medium">{{ item.label }}</span>
       </RouterLink>
 
-      <!-- Divider -->
       <div class="border-t border-gray-700 my-2"></div>
 
-      <!-- Settings — collapsible with nested routes -->
       <button
         @click="settingsOpen = !settingsOpen"
         class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors duration-150 text-sm"
@@ -77,16 +65,13 @@ const settingsActive = (): boolean => route.path.startsWith('/settings')
       >
         <span class="text-base">⚙️</span>
         <span class="font-medium flex-1 text-left">Configuracion</span>
-        <!-- Arrow indicator -->
         <span
           class="text-xs transition-transform duration-200"
           :class="settingsOpen || settingsActive() ? 'rotate-90' : ''"
+          >›</span
         >
-          ›
-        </span>
       </button>
 
-      <!-- Settings submenu — nested route links -->
       <div
         v-if="settingsOpen || settingsActive()"
         class="ml-4 space-y-1 border-l border-gray-700 pl-3"
@@ -107,7 +92,6 @@ const settingsActive = (): boolean => route.path.startsWith('/settings')
       </div>
     </nav>
 
-    <!-- User info footer -->
     <div class="p-4 border-t border-gray-700">
       <div class="flex items-center gap-3">
         <div
