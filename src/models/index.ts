@@ -19,6 +19,7 @@ export interface FuelLoad {
   type: 'load'
   truckId: number
   driverId: number
+  odometer: number    // ← agregar esta línea
   liters: number
   timestamp: string
 }
