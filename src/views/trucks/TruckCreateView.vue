@@ -15,7 +15,6 @@ const handleSubmit = (data: { plate: string; model: string; brand: string }): vo
 
 <template>
   <div>
-
     <!-- Header -->
     <div class="mb-6">
       <h2 class="text-2xl font-bold text-gray-800">Nueva Camioneta</h2>
@@ -26,4 +25,7 @@ const handleSubmit = (data: { plate: string; model: string; brand: string }): vo
     <TruckForm
       submit-label="Registrar Camioneta"
       @submit="handleSubmit"
-      @cancel="router.p
+      @cancel="router.push('/trucks')"
+    />
+  </div>
+</template>
