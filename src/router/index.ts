@@ -9,7 +9,7 @@ const router = createRouter({
       component: DashboardView,
       redirect: '/users',
       children: [
-        // User routes
+        // ── User routes ──────────────────────────────
         {
           path: 'users',
           component: () => import('../views/users/UsersListView.vue'),
@@ -26,7 +26,8 @@ const router = createRouter({
           path: 'users/:id/edit',
           component: () => import('../views/users/UserEditView.vue'),
         },
-        // Truck routes
+
+        // ── Truck routes ─────────────────────────────
         {
           path: 'trucks',
           component: () => import('../views/trucks/TrucksListView.vue'),
@@ -39,7 +40,8 @@ const router = createRouter({
           path: 'trucks/:id/edit',
           component: () => import('../views/trucks/TruckEditView.vue'),
         },
-        // Fuel routes
+
+        // ── Fuel routes ──────────────────────────────
         {
           path: 'fuel/load',
           component: () => import('../views/fuel/FuelLoadView.vue'),
@@ -48,10 +50,30 @@ const router = createRouter({
           path: 'fuel/refill',
           component: () => import('../views/fuel/TankRefillView.vue'),
         },
-        // Records route
+
+        // ── Records route ────────────────────────────
         {
           path: 'records',
           component: () => import('../views/records/RecordsView.vue'),
+        },
+
+        // ── Settings — NESTED ROUTES ─────────────────
+        // SettingsView tiene su propio <RouterView /> adentro
+        // que renderiza el hijo activo
+        {
+          path: 'settings',
+          component: () => import('../views/settings/SettingsView.vue'),
+          redirect: '/settings/general',
+          children: [
+            {
+              path: 'general',
+              component: () => import('../views/settings/GeneralView.vue'),
+            },
+            {
+              path: 'team',
+              component: () => import('../views/settings/TeamView.vue'),
+            },
+          ],
         },
       ],
     },

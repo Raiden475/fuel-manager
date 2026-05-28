@@ -1,5 +1,8 @@
 <script setup lang="ts">
+import { useRouter } from 'vue-router'
 import type { User } from '../../models'
+
+const router = useRouter()
 
 // Props: receive a single user to display
 defineProps<{ user: User }>()
@@ -16,8 +19,13 @@ const emit = defineEmits<{
     <!-- User id -->
     <td class="px-4 py-3 text-sm text-gray-400">#{{ user.id }}</td>
 
-    <!-- User name -->
-    <td class="px-4 py-3 text-sm font-medium text-gray-800">{{ user.name }}</td>
+    <!-- User name — clickable link to detail view -->
+    <td
+      class="px-4 py-3 text-sm font-medium text-blue-600 hover:underline cursor-pointer"
+      @click="router.push(`/users/${user.id}`)"
+    >
+      {{ user.name }}
+    </td>
 
     <!-- User email -->
     <td class="px-4 py-3 text-sm text-gray-600">{{ user.email }}</td>
