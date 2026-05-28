@@ -13,25 +13,41 @@ const emit = defineEmits<{
 </script>
 
 <template>
-  <div class="bg-white rounded-xl shadow overflow-hidden">
+  <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
     <!-- Empty state -->
-    <div v-if="users.length === 0" class="p-8 text-center text-gray-400">
-      <p class="text-4xl mb-2">👤</p>
-      <p class="text-sm">No hay usuarios registrados</p>
+    <div v-if="users.length === 0" class="p-12 text-center">
+      <p class="text-3xl mb-3">👤</p>
+      <p class="text-sm font-medium text-gray-500">No se encontraron usuarios</p>
+      <p class="text-xs text-gray-400 mt-1">Intentá con otro término de búsqueda</p>
     </div>
 
-    <!-- Users table -->
+    <!-- Table -->
     <table v-else class="w-full">
-      <thead class="bg-gray-50 border-b border-gray-200">
-        <tr>
-          <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500">ID</th>
-          <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500">Nombre</th>
-          <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500">Email</th>
-          <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500">Acciones</th>
+      <thead>
+        <tr class="border-b border-gray-100 bg-gray-50">
+          <th
+            class="px-4 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wide"
+          >
+            ID
+          </th>
+          <th
+            class="px-4 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wide"
+          >
+            Nombre
+          </th>
+          <th
+            class="px-4 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wide"
+          >
+            Email
+          </th>
+          <th
+            class="px-4 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wide"
+          >
+            Acciones
+          </th>
         </tr>
       </thead>
-      <tbody>
-        <!-- UserRow is the grandchild component -->
+      <tbody class="divide-y divide-gray-50">
         <UserRow
           v-for="user in users"
           :key="user.id"
@@ -41,5 +57,12 @@ const emit = defineEmits<{
         />
       </tbody>
     </table>
+
+    <!-- Footer -->
+    <div v-if="users.length > 0" class="px-4 py-3 border-t border-gray-100 bg-gray-50">
+      <p class="text-xs text-gray-400">
+        {{ users.length }} fila{{ users.length !== 1 ? 's' : '' }}
+      </p>
+    </div>
   </div>
 </template>
