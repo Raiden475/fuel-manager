@@ -19,7 +19,7 @@ export interface FuelLoad {
   type: 'load'
   truckId: number
   driverId: number
-  odometer: number    // ← agregar esta línea
+  odometer: number // ← agregar esta línea
   liters: number
   timestamp: string
 }
@@ -51,9 +51,10 @@ export interface AuthUser {
 
 // External supply truck that refills the main tank
 export interface SupplyTruck {
-  driverName: string    // external driver — entered manually
-  truckPlate: string    // supply truck plate
-  company: string       // transport company name
+  driverName: string // external driver — entered manually
+  truckPlate: string // supply truck plate
+  company: string // transport company name
+  remito: string // delivery note number
   litersDelivered: number
   timestamp: string
 }
