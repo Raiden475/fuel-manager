@@ -19,6 +19,7 @@ export interface FuelLoad {
   type: 'load'
   truckId: number
   driverId: number
+  odometer: number
   liters: number
   timestamp: string
 }
@@ -35,3 +36,25 @@ export interface TankRefill {
 
 // Union type — a record is either a load or a refill
 export type FuelRecord = FuelLoad | TankRefill
+
+// User roles in the system
+export type UserRole = 'admin' | 'operator'
+
+// Authenticated user session
+export interface AuthUser {
+  id: number
+  name: string
+  email: string
+  role: UserRole
+  password: string
+}
+
+// External supply truck that refills the main tank
+export interface SupplyTruck {
+  driverName: string // external driver — entered manually
+  truckPlate: string // supply truck plate
+  company: string // transport company name
+  remito: string // delivery note number
+  litersDelivered: number
+  timestamp: string
+}
