@@ -1,10 +1,15 @@
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import type { FuelLoad, TankRefill, FuelRecord } from '../models'
 
 // Tank configuration
 const TANK_MAX = 500
-const currentLevel = ref<number>(320)
-const records = ref<FuelRecord[]>([])
+
+// Load persisted data from localStorage or use defaults
+const savedLevel = localStorage.getItem('fuel_tank_level')
+const savedRecords = localStorage.getItem('fuel_records')
+
+const currentLevel = ref<number>(savedLevel ? Number(savedLevel) : 320)
+const records = ref<FuelRecord[]>(savedRecords ? JSON.parse(savedRecords) : [])
 
 export function useFuelStore() {
   // Computed: percentage of tank filled
@@ -20,6 +25,16 @@ export function useFuelStore() {
 
   // Computed: liters needed to reach full capacity
   const litersNeededToFill = computed(() => TANK_MAX - currentLevel.value)
+
+  // Persist tank level to localStorage on every change
+  watch(currentLevel, (val) => {
+    localStorage.setItem('fuel_tank_level', String(val))
+  })
+
+  // Persist records to localStorage on every change
+  watch(records, (val) => {
+    localStorage.setItem('fuel_records', JSON.stringify(val))
+  }, { deep: true })
 
   // Add a fuel load — returns false if tank empty or not enough fuel
   const addFuelLoad = (data: Omit<FuelLoad, 'id' | 'type' | 'timestamp'>): boolean => {
@@ -50,6 +65,14 @@ export function useFuelStore() {
     return added
   }
 
+  // Get the last recorded odometer for a specific truck
+  const getLastOdometer = (truckId: number): number | null => {
+    const lastLoad = records.value.find(
+      (r) => r.type === 'load' && (r as FuelLoad).truckId === truckId
+    ) as FuelLoad | undefined
+    return lastLoad ? lastLoad.odometer : null
+  }
+
   return {
     currentLevel,
     TANK_MAX,
@@ -59,6 +82,7 @@ export function useFuelStore() {
     litersNeededToFill,
     records,
     addFuelLoad,
-    refillTank
+    refillTank,
+    getLastOdometer
   }
 }
