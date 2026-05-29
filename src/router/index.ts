@@ -71,6 +71,13 @@ const router = createRouter({
           component: () => import('../views/fuel/TankRefillView.vue'),
         },
 
+        // Tank history — admin only
+        {
+          path: 'tank/history',
+          meta: { adminOnly: true },
+          component: () => import('../views/fuel/TankHistoryView.vue'),
+        },
+
         // Records route — all roles
         {
           path: 'records',

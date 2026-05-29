@@ -14,6 +14,7 @@ const menuItems = [
   { path: '/trucks', label: 'Camionetas', icon: '🚛', adminOnly: true },
   { path: '/fuel/load', label: 'Cargar Combustible', icon: '⛽', adminOnly: false },
   { path: '/fuel/refill', label: 'Recargar Tanque', icon: '🛢️', adminOnly: false },
+  { path: '/tank/history', label: 'Historial Tanque', icon: '📊', adminOnly: true },
   { path: '/records', label: 'Historial', icon: '📋', adminOnly: false },
 ]
 
