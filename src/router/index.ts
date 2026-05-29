@@ -106,15 +106,6 @@ const router = createRouter({
   ],
 })
 
-// external supply track that refill the main track
-export interface SupplyTruck {
-  drivrName: string   //  external driver - entered manually
-  truckPlate: string  //  supply truck plate
-  company: string     //  transport company name
-  litersDelivered: number
-  timestamp: string
-}
-
 // Navigation guard — protect routes based on auth and role
 router.beforeEach((to) => {
   const { isAuthenticated, isAdmin } = useAuthStore()

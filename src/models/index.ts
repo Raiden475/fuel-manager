@@ -48,3 +48,12 @@ export interface AuthUser {
   role: UserRole
   password: string
 }
+
+// External supply truck that refills the main tank
+export interface SupplyTruck {
+  driverName: string    // external driver — entered manually
+  truckPlate: string    // supply truck plate
+  company: string       // transport company name
+  litersDelivered: number
+  timestamp: string
+}
