@@ -1,5 +1,5 @@
 import { ref, computed, watch } from 'vue'
-import type { FuelLoad, TankRefill, FuelRecord } from '../models'
+import type { FuelLoad, TankRefill, FuelRecord, SupplyTruck } from '../models'
 
 // Tank configuration
 const TANK_MAX = 500
@@ -73,6 +73,34 @@ export function useFuelStore() {
     return lastLoad ? lastLoad.odometer : null
   }
 
+  //Supply Track refill history
+  const supplyTrack = ref<SupplyTruck[]>([])
+
+  // Add a supply truck refill with external driver details
+  const addSupplyRefill = (data: Omit<SupplyTruck, 'timestamp'>): number => {
+  const prev = currentLevel.value
+  const added = Math.min(data.litersDelivered, litersNeededToFill.value)
+  currentLevel.value += added
+
+  supplyHistory.value.unshift({
+    ...data,
+    litersDelivered: added,
+    timestamp: new Date().toISOString()
+  })
+
+  records.value.unshift({
+    id: Date.now(),
+    type: 'refill',
+    litersAdded: added,
+    previousLevel: prev,
+    newLevel: currentLevel.value,
+    timestamp: new Date().toISOString()
+  })
+  return added
+}
+
+
+
   return {
     currentLevel,
     TANK_MAX,
@@ -83,6 +111,8 @@ export function useFuelStore() {
     records,
     addFuelLoad,
     refillTank,
-    getLastOdometer
+    getLastOdometer,
+    supplyHistory,
+    addSupplyRefill
   }
 }

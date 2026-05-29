@@ -71,6 +71,13 @@ const router = createRouter({
           component: () => import('../views/fuel/TankRefillView.vue'),
         },
 
+        // Tank history — admin only
+        {
+          path: 'tank/history',
+          meta: { adminOnly: true },
+          component: () => import('../views/fuel/TankHistoryView.vue'),
+        },
+
         // Records route — all roles
         {
           path: 'records',
@@ -98,6 +105,15 @@ const router = createRouter({
     },
   ],
 })
+
+// external supply track that refill the main track
+export interface SupplyTruck {
+  drivrName: string   //  external driver - entered manually
+  truckPlate: string  //  supply truck plate
+  company: string     //  transport company name
+  litersDelivered: number
+  timestamp: string
+}
 
 // Navigation guard — protect routes based on auth and role
 router.beforeEach((to) => {
