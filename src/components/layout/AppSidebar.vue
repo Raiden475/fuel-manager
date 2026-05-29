@@ -23,7 +23,12 @@ const settingsItems = [
   { path: '/settings/team', label: 'Equipo' },
 ]
 
-const isActive = (path: string): boolean => route.path.startsWith(path)
+// Exact match for home, startsWith for the rest
+const isActive = (path: string): boolean => {
+  if (path === '/') return route.path === '/'
+  return route.path.startsWith(path)
+}
+
 const settingsActive = (): boolean => route.path.startsWith('/settings')
 
 // Filter menu items based on role

@@ -2,36 +2,38 @@
 import { ref } from 'vue'
 import { useFuelStore } from '../../composables/useFuelStore'
 
-const { supplyHistory, addSupplyRefill, currentLevel,
-        TANK_MAX, litersNeededToFill } = useFuelStore()
+const { supplyHistory, addSupplyRefill, currentLevel, TANK_MAX } = useFuelStore()
 
 const driverName = ref('')
 const truckPlate = ref('')
 const company = ref('')
+const remito = ref('')
 const litersDelivered = ref<number | null>(null)
 const successMessage = ref('')
 const errors = ref<string[]>([])
 
 const handleSubmit = (): void => {
   errors.value = []
-  if (!driverName.value.trim()) errors.value.push('Ingresa el nombre del chofer externo')
-  if (!truckPlate.value.trim()) errors.value.push('Ingresa la patente del camion cisterna')
-  if (!company.value.trim()) errors.value.push('Ingresa la empresa transportista')
-  if (!litersDelivered.value || litersDelivered.value <= 0)
-    errors.value.push('Ingresa los litros entregados')
+  if (!driverName.value.trim()) errors.value.push('Ingresá el nombre del chofer externo')
+  if (!truckPlate.value.trim()) errors.value.push('Ingresá la patente del camión cisterna')
+  if (!company.value.trim()) errors.value.push('Ingresá la empresa transportista')
+  if (!remito.value.trim()) errors.value.push('Ingresá el número de remito')
+  if (!litersDelivered.value || litersDelivered.value <= 0) errors.value.push('Ingresá los litros entregados')
   if (errors.value.length > 0) return
 
   const added = addSupplyRefill({
     driverName: driverName.value.trim(),
     truckPlate: truckPlate.value.trim().toUpperCase(),
     company: company.value.trim(),
+    remito: remito.value.trim(),
     litersDelivered: litersDelivered.value!
   })
 
-  successMessage.value = `Se cargaron ${added}L al tanque. Nivel actual: ${currentLevel.value}L`
+  successMessage.value = `✅ Se registraron ${added}L. Nivel actual: ${currentLevel.value}L`
   driverName.value = ''
   truckPlate.value = ''
   company.value = ''
+  remito.value = ''
   litersDelivered.value = null
   setTimeout(() => { successMessage.value = '' }, 4000)
 }
@@ -41,7 +43,7 @@ const handleSubmit = (): void => {
   <div>
     <div class="mb-6">
       <h1 class="text-xl font-semibold text-gray-900">Historial del Tanque Principal</h1>
-      <p class="text-sm text-gray-400 mt-0.5">Registra recargas de camiones cisterna externos</p>
+      <p class="text-sm text-gray-400 mt-0.5">Registrá recargas de camiones cisterna externos</p>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -50,10 +52,10 @@ const handleSubmit = (): void => {
       <div class="bg-white rounded-xl border border-gray-200 p-6">
         <h2 class="text-sm font-semibold text-gray-800 mb-4">Nueva recarga de cisterna</h2>
 
-        <!-- Tank level indicator -->
+        <!-- Tank level -->
         <div class="bg-gray-50 rounded-lg p-3 mb-4">
           <div class="flex justify-between text-xs text-gray-500 mb-1">
-            <span>Nivel actual</span>
+            <span>Nivel actual del tanque</span>
             <span class="font-medium"
               :class="currentLevel < 50 ? 'text-red-600' : 'text-green-600'">
               {{ currentLevel }}L / {{ TANK_MAX }}L
@@ -65,7 +67,6 @@ const handleSubmit = (): void => {
               :style="{ width: Math.round((currentLevel / TANK_MAX) * 100) + '%' }">
             </div>
           </div>
-          <p class="text-xs text-gray-400 mt-1">Disponible: {{ litersNeededToFill }}L</p>
         </div>
 
         <div v-if="successMessage"
@@ -75,12 +76,12 @@ const handleSubmit = (): void => {
 
         <ul v-if="errors.length > 0"
           class="bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3 rounded-lg mb-4 space-y-1">
-          <li v-for="e in errors" :key="e">{{ e }}</li>
+          <li v-for="e in errors" :key="e">• {{ e }}</li>
         </ul>
 
         <div class="mb-4">
           <label class="block text-xs font-medium text-gray-600 mb-1">Chofer externo</label>
-          <input v-model="driverName" type="text" placeholder="Ej: Juan Perez"
+          <input v-model="driverName" type="text" placeholder="Ej: Juan Pérez"
             class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm
               focus:outline-none focus:ring-2 focus:ring-green-500" />
         </div>
@@ -94,7 +95,14 @@ const handleSubmit = (): void => {
 
         <div class="mb-4">
           <label class="block text-xs font-medium text-gray-600 mb-1">Empresa transportista</label>
-          <input v-model="company" type="text" placeholder="Ej: PAE Logistica"
+          <input v-model="company" type="text" placeholder="Ej: PAE Logística"
+            class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm
+              focus:outline-none focus:ring-2 focus:ring-green-500" />
+        </div>
+
+        <div class="mb-4">
+          <label class="block text-xs font-medium text-gray-600 mb-1">Número de remito</label>
+          <input v-model="remito" type="text" placeholder="Ej: REM-00123"
             class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm
               focus:outline-none focus:ring-2 focus:ring-green-500" />
         </div>
@@ -102,14 +110,17 @@ const handleSubmit = (): void => {
         <div class="mb-6">
           <label class="block text-xs font-medium text-gray-600 mb-1">
             Litros entregados
-            <span class="text-gray-400 font-normal ml-1">(max: {{ litersNeededToFill }}L)</span>
+            <span class="text-gray-400 font-normal ml-1">(max disponible: {{ TANK_MAX - currentLevel }}L)</span>
           </label>
-          <input v-model.number="litersDelivered" type="number" min="1" placeholder="Ej: 200"
+          <input v-model.number="litersDelivered" type="number" min="1"
+            :max="TANK_MAX - currentLevel"
+            placeholder="Ej: 200"
             class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm
               focus:outline-none focus:ring-2 focus:ring-green-500" />
         </div>
 
-        <button @click="handleSubmit"
+        <button
+          @click="handleSubmit"
           class="w-full bg-green-500 text-white py-2.5 rounded-lg text-sm font-medium
             hover:bg-green-600 active:scale-95 transition-all">
           Registrar recarga
@@ -138,12 +149,13 @@ const handleSubmit = (): void => {
                   {{ entry.truckPlate }} · {{ entry.company }}
                 </p>
                 <p class="text-xs text-gray-400">
+                  Remito: <span class="font-medium">{{ entry.remito }}</span>
+                </p>
+                <p class="text-xs text-gray-400">
                   {{ new Date(entry.timestamp).toLocaleString('es-AR') }}
                 </p>
               </div>
-              <span class="text-sm font-bold text-green-600">
-                +{{ entry.litersDelivered }}L
-              </span>
+              <span class="text-sm font-bold text-green-600">+{{ entry.litersDelivered }}L</span>
             </div>
           </div>
         </div>
