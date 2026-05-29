@@ -16,28 +16,41 @@ const selectedDriverId = ref<number | 'all'>('all')
 const selectedTruckId = ref<number | 'all'>('all')
 
 // Computed: filtered records
+// Computed: filtered records based on strict UI selection without breaking refills
 const filteredRecords = computed(() => {
   return records.value.filter((r) => {
-    // Filter by type
+    // 1. Filter by type button (Todos / Cargas / Recargas)
     if (activeFilter.value !== 'all' && r.type !== activeFilter.value) return false
 
-    // Driver and truck filters only apply to loads
+    // 2. Global text search (Applies to both types if matching fields exist)
+    if (searchText.value) {
+      const query = searchText.value.toLowerCase()
+      const driver = r.type === 'load' ? getUserById((r as FuelLoad).driverId) : null
+      const truck = r.type === 'load' ? getTruckById((r as FuelLoad).truckId) : null
+
+      const matchesText =
+        driver?.name.toLowerCase().includes(query) ||
+        truck?.plate.toLowerCase().includes(query) ||
+        r.type.toLowerCase().includes(query)
+
+      if (!matchesText) return false
+    }
+
+    // 3. Strict Driver and Truck dropdown behavior (ONLY applies to loads)
     if (r.type === 'load') {
       const load = r as FuelLoad
-      if (selectedDriverId.value !== 'all' && load.driverId !== selectedDriverId.value) return false
-      if (selectedTruckId.value !== 'all' && load.truckId !== selectedTruckId.value) return false
+      const matchesDriver = selectedDriverId.value === 'all' || load.driverId === selectedDriverId.value
+      const matchesTruck = selectedTruckId.value === 'all' || load.truckId === selectedTruckId.value
 
-      // Text search
-      if (searchText.value) {
-        const driver = getUserById(load.driverId)
-        const truck = getTruckById(load.truckId)
-        const query = searchText.value.toLowerCase()
-        return (
-          driver?.name.toLowerCase().includes(query) || truck?.plate.toLowerCase().includes(query)
-        )
+      // If it doesn't match both active dropdowns, filter it out
+      if (!matchesDriver || !matchesTruck) return false
+    }
+    // 4. If a specific driver or truck is selected, hide general tank refills
+    // because refills do not belong to individual drivers or trucks
+    else if (r.type === 'refill') {
+      if (selectedDriverId.value !== 'all' || selectedTruckId.value !== 'all') {
+        return false
       }
-    } else if (activeFilter.value === 'load') {
-      return false
     }
 
     return true
