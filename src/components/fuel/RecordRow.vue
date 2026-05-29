@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { useUserStore } from '../../composables/useUserStore'
 import { useTruckStore } from '../../composables/useTruckStore'
-import type { FuelRecord } from '../../models'
+import type { FuelRecord, FuelLoad } from '../../models'
 
 const props = defineProps<{
   record: FuelRecord
@@ -14,12 +14,18 @@ const { getTruckById } = useTruckStore()
 // Get driver and truck names only for fuel load records
 const driverName = computed(() => {
   if (props.record.type !== 'load') return null
-  return getUserById(props.record.driverId)?.name ?? 'Desconocido'
+  return getUserById((props.record as FuelLoad).driverId)?.name ?? 'Desconocido'
 })
 
 const truckPlate = computed(() => {
   if (props.record.type !== 'load') return null
-  return getTruckById(props.record.truckId)?.plate ?? 'Desconocida'
+  return getTruckById((props.record as FuelLoad).truckId)?.plate ?? 'Desconocida'
+})
+
+// Get odometer only for load records
+const odometer = computed(() => {
+  if (props.record.type !== 'load') return null
+  return (props.record as FuelLoad).odometer
 })
 
 // Format timestamp to local date string
@@ -44,10 +50,10 @@ const formattedDate = computed(() =>
 
     <!-- Liters -->
     <td class="px-4 py-3 text-sm text-gray-700">
-      {{ record.type === 'load' ? record.liters : record.litersAdded }}L
+      {{ record.type === 'load' ? (record as FuelLoad).liters : (record as any).litersAdded }}L
     </td>
 
-    <!-- Driver and truck (only for load) -->
+    <!-- Driver and truck -->
     <td class="px-4 py-3 text-sm text-gray-700">
       <template v-if="record.type === 'load'">
         <span>{{ driverName }}</span>
@@ -57,9 +63,15 @@ const formattedDate = computed(() =>
       <span v-else class="text-gray-400">—</span>
     </td>
 
+    <!-- Odometer -->
+    <td class="px-4 py-3 text-sm text-gray-700">
+      <span v-if="odometer !== null">{{ odometer }} km</span>
+      <span v-else class="text-gray-400">—</span>
+    </td>
+
     <!-- Tank level -->
     <td class="px-4 py-3 text-sm text-gray-700">
-      {{ record.type === 'load' ? '—' : `${record.newLevel}L` }}
+      {{ record.type === 'load' ? '—' : `${(record as any).newLevel}L` }}
     </td>
 
     <!-- Timestamp -->
@@ -68,4 +80,3 @@ const formattedDate = computed(() =>
     </td>
   </tr>
 </template>
-

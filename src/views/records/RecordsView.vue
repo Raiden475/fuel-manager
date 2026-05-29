@@ -32,6 +32,7 @@ const { records, currentLevel, TANK_MAX } = useFuelStore()
             <th class="px-4 py-3 text-xs font-semibold text-gray-500 uppercase">Tipo</th>
             <th class="px-4 py-3 text-xs font-semibold text-gray-500 uppercase">Litros</th>
             <th class="px-4 py-3 text-xs font-semibold text-gray-500 uppercase">Chofer / Patente</th>
+            <th class="px-4 py-3 text-xs font-semibold text-gray-500 uppercase">Kilometraje</th>
             <th class="px-4 py-3 text-xs font-semibold text-gray-500 uppercase">Nivel tanque</th>
             <th class="px-4 py-3 text-xs font-semibold text-gray-500 uppercase">Fecha</th>
           </tr>
