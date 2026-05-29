@@ -9,6 +9,7 @@ const settingsOpen = ref(false)
 
 // Admin sees everything — operator only sees fuel and records
 const menuItems = [
+  { path: '/', label: 'Inicio', icon: '🏠', adminOnly: false },
   { path: '/users', label: 'Usuarios', icon: '👤', adminOnly: true },
   { path: '/trucks', label: 'Camionetas', icon: '🚛', adminOnly: true },
   { path: '/fuel/load', label: 'Cargar Combustible', icon: '⛽', adminOnly: false },
@@ -110,11 +111,11 @@ const visibleItems = menuItems.filter((item) => !item.adminOnly || isAdmin.value
         <div
           class="w-7 h-7 rounded-full bg-green-500 flex items-center justify-center text-xs font-bold text-white"
         >
-          R
+          P
         </div>
         <div class="flex-1 min-w-0">
-          <p class="text-xs font-medium text-gray-900 truncate">Raiden475</p>
-          <p class="text-xs text-gray-400 truncate">ITS Cipolletti</p>
+          <p class="text-xs font-medium text-gray-900 truncate">PHI3D INNOVATIONS</p>
+          <p class="text-xs text-gray-400 truncate">Fuel Manager v1.0</p>
         </div>
       </div>
     </div>

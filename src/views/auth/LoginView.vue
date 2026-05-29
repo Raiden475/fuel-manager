@@ -95,21 +95,6 @@ const handleLogin = (): void => {
           {{ loading ? 'Ingresando...' : 'Ingresar' }}
         </button>
       </div>
-
-      <!-- Credentials hint -->
-      <div class="mt-4 bg-white rounded-xl border border-gray-200 p-4">
-        <p class="text-xs font-medium text-gray-500 mb-2">Credenciales de prueba:</p>
-        <div class="space-y-1.5">
-          <div class="flex justify-between text-xs">
-            <span class="text-gray-400">Admin:</span>
-            <span class="font-mono text-gray-600">admin@campo.com / admin123</span>
-          </div>
-          <div class="flex justify-between text-xs">
-            <span class="text-gray-400">Operador:</span>
-            <span class="font-mono text-gray-600">operador@campo.com / op123</span>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 </template>

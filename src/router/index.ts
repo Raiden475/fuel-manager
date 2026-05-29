@@ -15,8 +15,13 @@ const router = createRouter({
     {
       path: '/',
       component: DashboardView,
-      redirect: '/users',
       children: [
+        // Home — stats dashboard
+        {
+          path: '',
+          component: () => import('../views/HomeView.vue'),
+        },
+
         // User routes — admin only
         {
           path: 'users',
@@ -104,7 +109,7 @@ router.beforeEach((to) => {
   // Redirect to login if not authenticated
   if (!isAuthenticated.value) return '/login'
 
-  // Redirect to fuel/load if operator tries to access admin routes
+  // Redirect to home if operator tries to access admin routes
   if (to.meta.adminOnly && !isAdmin.value) return '/fuel/load'
 
   return true
