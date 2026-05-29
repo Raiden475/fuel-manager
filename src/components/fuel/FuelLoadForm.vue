@@ -12,13 +12,19 @@ const emit = defineEmits<{
 
 const { users } = useUserStore()
 const { trucks } = useTruckStore()
-const { currentLevel } = useFuelStore()
+const { currentLevel, getLastOdometer } = useFuelStore()
 
 const driverId = ref<number | null>(null)
 const truckId = ref<number | null>(null)
 const odometer = ref<number | null>(null)
 const liters = ref<number | null>(null)
 const errors = ref<string[]>([])
+
+// Computed: last odometer recorded for the selected truck
+const lastOdometer = computed(() => {
+  if (!truckId.value) return null
+  return getLastOdometer(truckId.value)
+})
 
 // Form is valid only when all fields are filled and liters do not exceed tank level
 const isFormValid = computed(() =>
@@ -37,6 +43,8 @@ const handleSubmit = () => {
   if (!driverId.value) errors.value.push('Seleccioná un chofer.')
   if (!truckId.value) errors.value.push('Seleccioná una camioneta.')
   if (!odometer.value || odometer.value <= 0) errors.value.push('Ingresá el kilometraje actual.')
+  if (odometer.value && lastOdometer.value !== null && odometer.value < lastOdometer.value)
+    errors.value.push(`El kilometraje no puede ser menor al último registrado (${lastOdometer.value} km) para esta camioneta.`)
   if (!liters.value || liters.value <= 0) errors.value.push('Ingresá los litros a cargar.')
   if (liters.value && liters.value > currentLevel.value)
     errors.value.push(`No podés cargar más de ${currentLevel.value}L disponibles en el tanque.`)
@@ -100,6 +108,10 @@ const handleSubmit = () => {
         placeholder="Ej: 125000"
         class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
+      <!-- Last odometer hint -->
+      <p v-if="lastOdometer !== null" class="text-xs text-gray-400 mt-1">
+        Último km registrado para esta camioneta: <strong>{{ lastOdometer }} km</strong>
+      </p>
     </div>
 
     <!-- Liters -->
